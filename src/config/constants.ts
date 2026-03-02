@@ -12,7 +12,7 @@ export const EMAIL_CONFIG = {
   /** Email password for SMTP auth */
   smtpPassword: "KW6nNryjDN61",
   /** Recipient for contact form inquiries */
-  inquiryRecipient: "gtechong72@gmail.com",
+  inquiryRecipient: "info@visionblueprintsltd.com",
 } as const;
 
 /** Social media links */
