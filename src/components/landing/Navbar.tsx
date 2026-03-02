@@ -15,7 +15,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt="Vision Blueprints Ltd logo"
-            className="h-30 md:h-20 w-auto brightness-0"
+            className="h-30 md:h-20 w-auto brightness-0 invert"
           />
           <span className="font-display text-lg md:text-xl font-bold text-gradient-gold hidden sm:inline">
             Vision Blueprints Ltd
