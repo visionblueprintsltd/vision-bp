@@ -60,14 +60,14 @@ const HeroSection = () => {
             className="group flex items-center gap-2 bg-gradient-gold text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-all duration-300 glow-gold"
           >
             <BookOpen size={20} />
-            Join the Club
+            Join Vision Blueprints Club
           </a>
           <a
             href="#showcase"
             className="group flex items-center gap-2 border border-primary text-primary px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300"
           >
             <ShoppingBag size={20} />
-            School Supplies
+            School Edition Supplies
           </a>
         </motion.div>
 
