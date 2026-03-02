@@ -14,8 +14,8 @@ const Navbar = () => {
         <a href="#" className="flex items-center gap-3">
           <img
             src={logo}
-            alt="Vision Blueprints Ltd logo"
-            className="h-30 md:h-20 w-auto brightness-0 invert"
+            alt="Vision Blueprints Ltd"
+            className="h-30 brightness-0 invert"
           />
           <span className="font-display text-lg md:text-xl font-bold text-gradient-gold hidden sm:inline">
             Vision Blueprints Ltd
