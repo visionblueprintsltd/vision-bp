@@ -13,37 +13,43 @@ const testimonials: Testimonial[] = [
   {
     name: "Wanjiku Muthoni",
     title: "Entrepreneur, Nairobi",
-    quote: "Vision Blueprints Club changed the way I approach my goals. The curated book selections gave me frameworks I still use daily in my business.",
+    quote:
+      "Vision Blueprints Club changed the way I approach my goals. The curated book selections gave me frameworks I still use daily in my business.",
     type: "club",
   },
   {
     name: "Mr. Omondi Otieno",
-    title: "Head of Procurement, Kisumu Girls High School",
-    quote: "Vision Blueprints supplied our entire school — from lab equipment to uniforms — affordably and on time. Truly a one-stop shop.",
+    title: "Head of Procurement",
+    quote:
+      "Vision Blueprints supplied our entire school — from lab equipment to uniforms — affordably and on time. Truly a one-stop shop.",
     type: "school",
   },
   {
     name: "Akinyi Nyaboke",
     title: "Software Developer, Mombasa",
-    quote: "The community here is unlike anything else. I've found accountability partners and mentors who genuinely care about my growth.",
+    quote:
+      "The community here is unlike anything else. I've found accountability partners and mentors who genuinely care about my growth.",
     type: "club",
   },
   {
     name: "Mrs. Njeri Kamau",
-    title: "Principal, Starehe Academy",
-    quote: "Their textbooks and revision materials are top quality. Our students' exam performance improved significantly after switching to their supplies.",
+    title: "Principal",
+    quote:
+      "Their textbooks and revision materials are top quality. Our students' exam performance improved significantly after switching to their supplies.",
     type: "school",
   },
   {
     name: "Fatuma Hassan",
     title: "Marketing Director, Eldoret",
-    quote: "Every book recommendation has been spot-on. The discussion sessions push you to think deeper and apply what you've learned immediately.",
+    quote:
+      "Every book recommendation has been spot-on. The discussion sessions push you to think deeper and apply what you've learned immediately.",
     type: "club",
   },
   {
     name: "Mr. Kipchoge Bett",
-    title: "Head Teacher, Nandi Hills Academy",
-    quote: "Same-day delivery within Nairobi and competitive pricing on bulk orders — Vision Blueprints is our trusted school supplies partner.",
+    title: "Head Teacher",
+    quote:
+      "Same-day delivery within Nairobi and competitive pricing on bulk orders — Vision Blueprints is our trusted school supplies partner.",
     type: "school",
   },
 ];
@@ -52,8 +58,15 @@ const testimonials: Testimonial[] = [
 const TestimonialsSection = () => {
   const [current, setCurrent] = useState(0);
 
-  const next = useCallback(() => setCurrent((c) => (c + 1) % testimonials.length), []);
-  const prev = useCallback(() => setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length), []);
+  const next = useCallback(
+    () => setCurrent((c) => (c + 1) % testimonials.length),
+    [],
+  );
+  const prev = useCallback(
+    () =>
+      setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length),
+    [],
+  );
 
   useEffect(() => {
     const timer = setInterval(next, 5000);
@@ -63,7 +76,10 @@ const TestimonialsSection = () => {
   const t = testimonials[current];
 
   return (
-    <section id="testimonials" className="section-padding bg-secondary/30 overflow-hidden">
+    <section
+      id="testimonials"
+      className="section-padding bg-secondary/30 overflow-hidden"
+    >
       <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -71,7 +87,9 @@ const TestimonialsSection = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <p className="text-primary font-medium tracking-widest uppercase text-sm mb-3">Testimonials</p>
+          <p className="text-primary font-medium tracking-widest uppercase text-sm mb-3">
+            Testimonials
+          </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold">
             Voices of <span className="text-gradient-gold">Impact</span>
           </h2>
