@@ -104,7 +104,7 @@ const Footer = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <img src={logo} alt="Vision Blueprints Ltd" className="h-12 brightness-0 invert" />
+              <img src={logo} alt="Vision Blueprints Ltd" className="h-20 brightness-0 invert" />
               <span className="font-display text-xl font-bold text-gradient-gold">{COMPANY_INFO.name}</span>
             </div>
 
