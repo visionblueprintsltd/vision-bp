@@ -103,7 +103,8 @@ const JoinClubSection = () => {
               type="tel"
               value={form.phone}
               onChange={handleChange}
-              placeholder="Phone Number (optional)"
+              placeholder="Phone Number *"
+              required
               maxLength={20}
               className={inputClass}
             />
@@ -111,7 +112,8 @@ const JoinClubSection = () => {
               name="message"
               value={form.message}
               onChange={handleChange}
-              placeholder="Tell us about yourself (optional)"
+              placeholder="Tell us about yourself *"
+              required
               maxLength={500}
               rows={3}
               className={`${inputClass} resize-none`}

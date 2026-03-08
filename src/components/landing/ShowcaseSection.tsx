@@ -28,7 +28,19 @@ const products: Product[] = [
     title: "Textbooks & Teachers' Guides",
     category: "School Supplies",
     description: "Quality textbooks and teachers' guides covering the full curriculum.",
-    price: "KSh 400",
+    price: "From KSh 400",
+  },
+  {
+    title: "Games Equipment",
+    category: "Sports & Play",
+    description: "High-quality sports gear and playground equipment for physical education and extracurriculars.",
+    price: "Contact for pricing",
+  },
+  {
+    title: "School Furniture",
+    category: "Infrastructure",
+    description: "Ergonomic desks, chairs, and laboratory workstations designed for modern classrooms.",
+    price: "Contact for pricing",
   },
   {
     title: "Stationery & Office Supplies",
@@ -51,11 +63,10 @@ const products: Product[] = [
   },
 ];
 
-/** Product showcase grid */
 const ShowcaseSection = () => {
   return (
-    <section id="showcase" className="section-padding bg-background">
-      <div className="container mx-auto">
+    <section id="showcase" className="section-padding bg-background py-20">
+      <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -67,39 +78,42 @@ const ShowcaseSection = () => {
             Books, Supplies & <span className="text-gradient-gold">More</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Your one-stop shop for learning and teaching essentials.
+            Your one-stop shop for learning and teaching essentials, from textbooks to school infrastructure.
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product, i) => (
             <motion.div
               key={product.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="glass-card overflow-hidden group hover:border-primary/40 transition-all duration-300"
+              transition={{ delay: i * 0.05 }}
+              className="glass-card overflow-hidden group hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
             >
-              <div className="h-1 bg-gradient-gold" />
-              <div className="p-6">
+              <div className="h-1 bg-gradient-gold w-full" />
+              <div className="p-6 flex flex-col flex-grow">
                 {product.badge && (
-                  <span className="inline-block bg-primary/20 text-primary text-xs font-semibold px-3 py-1 rounded-full mb-3">
-                    {product.badge}
-                  </span>
+                  <div className="mb-3">
+                    <span className="inline-block bg-primary/20 text-primary text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">
+                      {product.badge}
+                    </span>
+                  </div>
                 )}
-                <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">{product.category}</p>
-                <h3 className="font-display text-xl font-bold mb-2">{product.title}</h3>
-                <p className="text-muted-foreground text-sm mb-4 leading-relaxed">{product.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-primary font-bold text-lg">{product.price}</span>
+                <p className="text-muted-foreground text-[10px] uppercase tracking-wider mb-1 font-semibold">{product.category}</p>
+                <h3 className="font-display text-lg font-bold mb-2 leading-tight">{product.title}</h3>
+                <p className="text-muted-foreground text-sm mb-6 leading-relaxed flex-grow">{product.description}</p>
+                
+                <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between gap-2">
+                  <span className="text-primary font-bold text-base whitespace-nowrap">{product.price}</span>
                   <a
                     href="#contact"
-                    className="flex items-center gap-1.5 bg-gradient-gold text-primary-foreground px-4 py-2 rounded-md text-sm font-semibold hover:opacity-90 transition-opacity group-hover:gap-2.5 duration-300"
+                    className="flex items-center gap-1.5 bg-gradient-gold text-primary-foreground px-3 py-2 rounded-md text-xs font-bold hover:opacity-90 transition-all group-hover:gap-2 duration-300"
                   >
-                    <ShoppingCart size={16} />
+                    <ShoppingCart size={14} />
                     Inquire
-                    <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </a>
                 </div>
               </div>
