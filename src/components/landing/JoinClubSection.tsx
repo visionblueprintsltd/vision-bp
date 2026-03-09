@@ -6,7 +6,11 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 const joinSchema = z.object({
-  full_name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
+  full_name: z
+    .string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(100),
   email: z.string().trim().email("Please enter a valid email").max(255),
   phone: z.string().trim().max(20).optional().or(z.literal("")),
   message: z.string().trim().max(500).optional().or(z.literal("")),
@@ -16,10 +20,17 @@ type JoinForm = z.infer<typeof joinSchema>;
 
 /** Join Vision Blueprints Club section */
 const JoinClubSection = () => {
-  const [form, setForm] = useState<JoinForm>({ full_name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState<JoinForm>({
+    full_name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -45,7 +56,9 @@ const JoinClubSection = () => {
           throw error;
         }
       } else {
-        toast.success(`Welcome to Vision Blueprints Club, ${result.data.full_name}! We'll be in touch soon.`);
+        toast.success(
+          `Welcome to Vision Blueprints Club, ${result.data.full_name}! We'll be in touch soon.`,
+        );
         setForm({ full_name: "", email: "", phone: "", message: "" });
       }
     } catch {
@@ -72,7 +85,9 @@ const JoinClubSection = () => {
               Join the <span className="text-gradient-gold">Club</span>
             </h2>
             <p className="text-muted-foreground">
-              Become a member of Vision Blueprints Club and unlock personal growth through curated books, workshops, and a community of changemakers.
+              Become a member of Vision Blueprints Club and unlock personal
+              growth through curated books, workshops, and a community of
+              changemakers.
             </p>
           </div>
 
@@ -103,7 +118,8 @@ const JoinClubSection = () => {
               type="tel"
               value={form.phone}
               onChange={handleChange}
-              placeholder="Phone Number (optional)"
+              placeholder="Phone Number *"
+              required
               maxLength={20}
               className={inputClass}
             />
@@ -111,7 +127,8 @@ const JoinClubSection = () => {
               name="message"
               value={form.message}
               onChange={handleChange}
-              placeholder="Tell us about yourself (optional)"
+              placeholder="Tell us about yourself *"
+              required
               maxLength={500}
               rows={3}
               className={`${inputClass} resize-none`}
