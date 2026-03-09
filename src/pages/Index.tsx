@@ -7,6 +7,7 @@ import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import JoinClubSection from "@/components/landing/JoinClubSection";
 import NewsletterSection from "@/components/landing/NewsletterSection";
 import Footer from "@/components/landing/Footer";
+import SocialFab from "@/components/landing/SocialFab";
 
 /**
  * Vision Blueprints Ltd Landing Page
@@ -26,6 +27,7 @@ const Index = () => {
         <NewsletterSection />
       </main>
       <Footer />
+      <SocialFab />
     </>
   );
 };
