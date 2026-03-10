@@ -8,9 +8,9 @@ import NotFound from "./pages/NotFound";
 import BlogList from "./pages/blog/BlogList";
 import BlogPost from "./pages/blog/BlogPost";
 import AdminLogin from "./pages/admin/Login";
-import ProtectedRoute from "@/components/admin/ProtectedRoute";
+import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import AdminDashboard from "./pages/admin/Dashboard";
-import AdminDashboard from "./pages/admin/CreatePost";
+import CreatePost from "./pages/admin/CreatePost";
 
 const queryClient = new QueryClient();
 

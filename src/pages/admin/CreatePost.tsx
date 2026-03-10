@@ -6,16 +6,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Camera, Loader2 } from "lucide-react";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState<string | undefined>("");
+  const [coverImage, setCoverImage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `post-covers/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('blog-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('blog-images').getPublicUrl(filePath);
+      setCoverImage(data.publicUrl);
+      toast({ title: "Image uploaded!" });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Upload failed", description: error.message });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +54,7 @@ const CreatePost = () => {
         title,
         slug: slug.toLowerCase().replace(/ /g, '-'),
         content,
+        cover_image: coverImage,
         excerpt,
         status: 'published',
         published_at: new Date().toISOString()
