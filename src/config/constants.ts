@@ -17,17 +17,18 @@ export const EMAIL_CONFIG = {
 
 /** Social media links */
 export const SOCIAL_LINKS = {
-  facebook: "https://facebook.com/visionblueprintsltd",
-  instagram: "https://instagram.com/visionblueprintsltd",
+  facebook: "https://www.facebook.com/people/Vision-Blueprints-Ltd/61576386442703/",
+  instagram: "https://www.instagram.com/vision_blueprints/",
   tiktok: "https://tiktok.com/@visionblueprintsltd",
-  linkedin: "https://linkedin.com/company/visionblueprintsltd",
+  linkedin: "https://ke.linkedin.com/in/john-njihia-wahinya-1a2568366",
   twitter: "https://x.com/visionblueprintsltd",
-  youtube: "https://youtube.com/@visionblueprintsltd",
+  youtube: "https://youtube.com/@visionblueprints",
 } as const;
 
 /** Navigation links */
 export const NAV_LINKS = [
   { label: "About", href: "#about" },
+  { label: "Blog", href: "/blog" },
   { label: "Our Offerings", href: "#value" },
   { label: "Products", href: "#showcase" },
   { label: "Testimonials", href: "#testimonials" },

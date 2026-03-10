@@ -8,6 +8,7 @@ import JoinClubSection from "@/components/landing/JoinClubSection";
 import NewsletterSection from "@/components/landing/NewsletterSection";
 import Footer from "@/components/landing/Footer";
 import SocialFab from "@/components/landing/SocialFab";
+import GallerySection from "@/components/landing/GallerySection";
 
 /**
  * Vision Blueprints Ltd Landing Page
@@ -23,6 +24,7 @@ const Index = () => {
         <ValueProposition />
         <ShowcaseSection />
         <TestimonialsSection />
+        <GallerySection />
         <JoinClubSection />
         <NewsletterSection />
       </main>

@@ -17,7 +17,7 @@ const BlogPost = () => {
   const { data: post, isLoading, error } = useQuery({
     queryKey: ["blog-post", slug],
     queryFn: async () => {
-      if (!slug) throw new Error("No slug provided");
+      if (!slug) throw new Error("Slug is missing");
       
       const { data, error } = await supabase
         .from("blogs")
@@ -49,10 +49,12 @@ const BlogPost = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <Navbar />
-        <h2 className="text-2xl font-bold mb-4">Post not found</h2>
-        <Button asChild>
-          <Link to="/blog">Return to Blog</Link>
-        </Button>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Article Not Found</h2>
+          <Button asChild>
+            <Link to="/blog">Back to Feed</Link>
+          </Button>
+        </div>
       </div>
     );
   }
@@ -68,41 +70,50 @@ const BlogPost = () => {
       />
       <Navbar />
       
-      <main className="flex-grow container mx-auto px-4 py-24 max-w-3xl">
-        <Link to="/blog" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors">
+      <main className="flex-grow container mx-auto px-4 py-16 md:py-24 max-w-3xl">
+        <Link 
+          to="/blog" 
+          className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary mb-10 transition-colors"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blog
         </Link>
 
-        <header className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            {post.title}
-          </h1>
-          <div className="text-muted-foreground">
-            {new Date(post.published_at || post.created_at).toLocaleDateString('en-US', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
-            })}
+        <article>
+          <header className="mb-10">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4 leading-tight">
+              {post.title}
+            </h1>
+            <div className="flex items-center gap-3 text-slate-500 text-sm">
+              <time dateTime={post.published_at || post.created_at}>
+                {new Date(post.published_at || post.created_at).toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </time>
+            </div>
+          </header>
+
+          {post.cover_image && (
+            <div className="mb-12 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
+              <img 
+                src={post.cover_image} 
+                alt={post.title} 
+                className="w-full h-auto object-cover"
+                loading="eager"
+              />
+            </div>
+          )}
+
+          <div className="prose prose-slate prose-lg max-w-none 
+            prose-headings:font-bold prose-a:text-primary prose-img:rounded-xl">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.content || ""}
+            </ReactMarkdown>
           </div>
-        </header>
+        </article>
 
-        {post.cover_image && (
-          <div className="mb-12 rounded-2xl overflow-hidden shadow-sm border">
-            <img 
-              src={post.cover_image} 
-              alt={post.title} 
-              className="w-full h-auto object-cover max-h-[500px]"
-            />
-          </div>
-        )}
-
-        <div className="prose prose-slate lg:prose-lg max-w-none dark:prose-invert">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {post.content || ""}
-          </ReactMarkdown>
-        </div>
-
-        <div className="mt-16 border-t pt-8">
+        <div className="mt-20 border-t border-slate-100 pt-10">
           <FacebookComments slug={post.slug} />
         </div>
       </main>
