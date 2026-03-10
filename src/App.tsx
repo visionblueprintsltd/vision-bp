@@ -8,7 +8,9 @@ import NotFound from "./pages/NotFound";
 import BlogList from "./pages/blog/BlogList";
 import BlogPost from "./pages/blog/BlogPost";
 import AdminLogin from "./pages/admin/Login";
+import ProtectedRoute from "@/components/admin/ProtectedRoute";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminDashboard from "./pages/admin/CreatePost";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +30,22 @@ const App = () => (
           
           {/* Admin Section */}
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/create" 
+            element={
+              <ProtectedRoute>
+                <CreatePost />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
