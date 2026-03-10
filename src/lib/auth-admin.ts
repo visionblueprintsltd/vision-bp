@@ -1,27 +1,22 @@
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Sends a 6-digit OTP to the admin email.
+ * Authenticates the admin using email and password.
  */
-export const sendAdminOTP = async (email: string) => {
-  const { error } = await supabase.auth.signInWithOtp({
+export const loginAdmin = async (email: string, password: string) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
-    options: {
-      shouldCreateUser: false,
-    },
+    password,
   });
+  
   if (error) throw error;
+  return data.session;
 };
 
 /**
- * Verifies the 6-digit OTP code.
+ * Signs out the current user.
  */
-export const verifyAdminOTP = async (email: string, token: string) => {
-  const { data, error } = await supabase.auth.verifyOtp({
-    email,
-    token,
-    type: 'email',
-  });
+export const logoutAdmin = async () => {
+  const { error } = await supabase.auth.signOut();
   if (error) throw error;
-  return data.session;
 };
