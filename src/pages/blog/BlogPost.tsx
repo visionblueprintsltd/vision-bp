@@ -32,42 +32,65 @@ const BlogPost = () => {
     enabled: !!slug,
   });
 
+  // Helper for safe date formatting
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "Date unavailable";
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) 
+      ? "Invalid Date" 
+      : date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
+  };
+
+  // 1. LOADING STATE
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-white">
         <Navbar />
-        <div className="container mx-auto px-4 py-24 max-w-3xl">
+        <div className="container mx-auto px-4 py-24 max-w-3xl flex-grow">
           <Skeleton className="h-12 w-3/4 mb-6" />
           <Skeleton className="h-6 w-1/4 mb-12" />
           <Skeleton className="h-[400px] w-full rounded-xl" />
         </div>
+        <Footer />
       </div>
     );
   }
 
+  // 2. ERROR OR NOT FOUND STATE
   if (error || !post) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="min-h-screen flex flex-col bg-white">
         <Navbar />
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Article Not Found</h2>
+        <div className="flex-grow flex flex-col items-center justify-center p-6 text-center">
+          <h2 className="text-2xl font-bold mb-4 text-slate-900">Article Not Found</h2>
+          <p className="text-slate-600 mb-8">We couldn't find the post you were looking for.</p>
           <Button asChild>
             <Link to="/blog">Back to Feed</Link>
           </Button>
         </div>
+        <Footer />
       </div>
     );
   }
 
+  // 3. SUCCESS STATE
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <BlogSEO 
-        title={post.meta_title || post.title}
-        description={post.meta_description || post.excerpt || ""}
-        slug={post.slug}
-        ogImage={post.og_image || post.cover_image || undefined}
-        publishedDate={post.published_at || post.created_at}
-      />
+      {/* Defensive check for SEO data */}
+      {post && (
+        <BlogSEO 
+          title={post.meta_title || post.title || "Blog Post"}
+          description={post.meta_description || post.excerpt || ""}
+          slug={post.slug || ""}
+          ogImage={post.og_image || post.cover_image || undefined}
+          publishedDate={post.published_at || post.created_at}
+        />
+      )}
+      
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-16 md:py-24 max-w-3xl">
@@ -85,22 +108,19 @@ const BlogPost = () => {
             </h1>
             <div className="flex items-center gap-3 text-slate-500 text-sm">
               <time dateTime={post.published_at || post.created_at}>
-                {new Date(post.published_at || post.created_at).toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                })}
+                {formatDate(post.published_at || post.created_at)}
               </time>
             </div>
           </header>
 
           {post.cover_image && (
-            <div className="mb-12 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
+            <div className="mb-12 rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50">
               <img 
                 src={post.cover_image} 
                 alt={post.title} 
                 className="w-full h-auto object-cover"
                 loading="eager"
+                onError={(e) => (e.currentTarget.style.display = 'none')}
               />
             </div>
           )}
@@ -113,9 +133,11 @@ const BlogPost = () => {
           </div>
         </article>
 
-        <div className="mt-20 border-t border-slate-100 pt-10">
-          <FacebookComments slug={post.slug} />
-        </div>
+        {post.slug && (
+          <div className="mt-20 border-t border-slate-100 pt-10">
+            <FacebookComments slug={post.slug} />
+          </div>
+        )}
       </main>
 
       <Footer />
