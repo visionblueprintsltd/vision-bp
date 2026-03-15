@@ -1,22 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 
+/**
+ * Interface representing the structure of a blog post in the static index
+ */
+interface BlogIndexItem {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  cover_image: string;
+  published_at: string;
+}
+
 const BlogList = () => {
-  const { data: posts, isLoading } = useQuery({
-    queryKey: ["blogs-published"],
+  const { data: posts, isLoading, error } = useQuery<BlogIndexItem[]>({
+    queryKey: ["static-blogs"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("blogs")
-        .select("*")
-        .eq("status", "published")
-        .order("published_at", { ascending: false });
-      if (error) throw error;
-      return data;
+      // Fetching the registry of posts stored in your GitHub directory (public/content)
+      const response = await fetch("/content/blog/posts-index.json");
+      if (!response.ok) {
+        throw new Error("Failed to fetch blog index from static storage");
+      }
+      return response.json();
     },
   });
 
@@ -32,6 +42,8 @@ const BlogList = () => {
               <Skeleton key={i} className="h-[300px] w-full rounded-xl" />
             ))}
           </div>
+        ) : error ? (
+          <div className="text-center text-red-500">Error loading articles.</div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
             {posts?.map((post) => (

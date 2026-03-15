@@ -1,68 +1,44 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MDEditor from '@uiw/react-md-editor';
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Camera, Loader2 } from "lucide-react";
+import { ArrowLeft, Save } from "lucide-react";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState<string | undefined>("");
-  const [coverImage, setCoverImage] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `post-covers/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('blog-images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage.from('blog-images').getPublicUrl(filePath);
-      setCoverImage(data.publicUrl);
-      toast({ title: "Image uploaded!" });
-    } catch (error: any) {
-      toast({ variant: "destructive", title: "Upload failed", description: error.message });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from("blogs").insert({
-        title,
-        slug: slug.toLowerCase().replace(/ /g, '-'),
-        content,
-        cover_image: coverImage,
-        excerpt,
-        status: 'published',
-        published_at: new Date().toISOString()
+      const response = await fetch("/api/save-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          slug: slug.toLowerCase().replace(/ /g, '-'),
+          content,
+          excerpt,
+          published_at: new Date().toISOString()
+        }),
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to save post");
+      }
 
-      toast({ title: "Success!", description: "Post published successfully." });
+      toast({ title: "Success!", description: "Post saved to GitHub." });
       navigate("/admin/dashboard");
     } catch (error: any) {
       toast({ variant: "destructive", title: "Error", description: error.message });
@@ -77,7 +53,7 @@ const CreatePost = () => {
         <Button variant="ghost" onClick={() => navigate("/admin/dashboard")}>
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
         </Button>
-        <h1 className="text-3xl font-bold">New Blog Post</h1>
+        <h1 className="text-3xl font-bold">New Blog Post (GitHub Storage)</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -92,7 +68,7 @@ const CreatePost = () => {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Slug (URL path)</label>
+            <label className="text-sm font-medium">Slug</label>
             <Input 
               value={slug} 
               onChange={(e) => setSlug(e.target.value)} 
@@ -103,11 +79,11 @@ const CreatePost = () => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Excerpt (SEO Summary)</label>
+          <label className="text-sm font-medium">Excerpt</label>
           <Textarea 
             value={excerpt} 
             onChange={(e) => setExcerpt(e.target.value)} 
-            placeholder="Brief summary for search results..." 
+            placeholder="Brief summary..." 
             rows={2}
           />
         </div>
@@ -124,7 +100,7 @@ const CreatePost = () => {
 
         <Button type="submit" className="w-full lg:w-auto" disabled={isSubmitting}>
           <Save className="w-4 h-4 mr-2" /> 
-          {isSubmitting ? "Publishing..." : "Publish Post"}
+          {isSubmitting ? "Saving to GitHub..." : "Publish to GitHub"}
         </Button>
       </form>
     </div>
