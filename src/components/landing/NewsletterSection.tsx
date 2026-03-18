@@ -71,7 +71,7 @@ const NewsletterSection = () => {
               className="bg-gradient-gold text-primary-foreground px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               <Send size={18} />
-              {loading ? "Subscribing..." : "Subscribe"}
+              {loading ? "Subscribing... " : "Subscribe"}
             </button>
           </form>
         </motion.div>
