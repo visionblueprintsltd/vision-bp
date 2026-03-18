@@ -69,13 +69,13 @@ const Footer = () => {
               quality school essentials for the next generation.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="https://www.facebook.com/people/Vision-Blueprints-Ltd/61576386442703/" className="hover:text-primary transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="https://www.instagram.com/vision_blueprints/" className="hover:text-primary transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="https://ke.linkedin.com/in/john-njihia-wahinya-1a2568366" className="hover:text-primary transition-colors">
                 <Linkedin size={20} />
               </a>
             </div>
@@ -120,7 +120,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} className="text-primary" />
-                <span>+254 700 000000</span>
+                <span>+254 725 107712</span>
               </li>
               <li className="flex items-center gap-3">
                 <MapPin size={16} className="text-primary" />

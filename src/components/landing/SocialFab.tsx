@@ -21,25 +21,25 @@ const SocialFab: React.FC = () => {
     { 
       name: 'TikTok', 
       icon: <Music2 size={20} />, 
-      url: 'https://www.tiktok.com',
+      url: 'https://www.tiktok.com@visionblueprintsltd',
       color: 'bg-[#000000]' 
     },
     { 
       name: 'LinkedIn', 
       icon: <Linkedin size={20} />, 
-      url: 'https://www.linkedin.com',
+      url: 'https://ke.linkedin.com/in/john-njihia-wahinya-1a2568366',
       color: 'bg-[#0077b5]' 
     },
     { 
       name: 'X', 
       icon: <Twitter size={20} />, 
-      url: 'https://www.twitter.com',
+      url: 'https://x.com/visionblueprintsltd',
       color: 'bg-[#000000]' 
     },
     { 
       name: 'YouTube', 
       icon: <Youtube size={20} />, 
-      url: 'https://www.youtube.com',
+      url: 'https://youtube.com/@visionblueprints',
       color: 'bg-[#ff0000]' 
     },
   ];
