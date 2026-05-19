@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const EditPost = () => {
   const { slug: originalSlug } = useParams<{ slug: string }>();
+  const [postId, setPostId] = useState<string>("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState<string | undefined>("");
   const [slug, setSlug] = useState("");
@@ -23,14 +25,19 @@ const EditPost = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/content/blog/data/${originalSlug}.json`);
-        if (!response.ok) throw new Error("Failed to fetch post data");
-        const data = await response.json();
+        const { data, error } = await supabase
+          .from("posts")
+          .select("*")
+          .eq("slug", originalSlug)
+          .single();
         
+        if (error) throw error;
+        
+        setPostId(data.id);
         setTitle(data.title);
         setSlug(data.slug);
         setContent(data.content);
-        setExcerpt(data.excerpt);
+        setExcerpt(data.excerpt || "");
         setCategory(data.category || "");
         setCoverImage(data.cover_image || "");
       } catch (error: any) {
@@ -49,24 +56,19 @@ const EditPost = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/save-post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const { error } = await supabase
+        .from("posts")
+        .update({
           title,
           slug,
-          content,
+          content: content || "",
           excerpt,
           category,
           cover_image: coverImage,
-          published_at: new Date().toISOString() // Or keep original? Usually keep original for edits unless specifically asked.
-        }),
-      });
+        })
+        .eq("id", postId);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to save post");
-      }
+      if (error) throw error;
 
       toast({ title: "Success!", description: "Post updated successfully." });
       navigate("/admin/dashboard");

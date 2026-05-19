@@ -9,36 +9,28 @@ import { ArrowLeft, MessageCircle, Calendar, Clock, User } from "lucide-react";
 import { FacebookComments } from "@/components/blog/FacebookComments";
 import { BlogSEO } from "@/components/blog/BlogSEO";
 import { calculateReadingTime } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
 
-  const { data: postData, isLoading: isDataLoading } = useQuery({
-    queryKey: ["blog-data", slug],
+  const { data: post, isLoading, error } = useQuery({
+    queryKey: ["blog-post", slug],
     queryFn: async () => {
       if (!slug) throw new Error("Slug is missing");
-      const response = await fetch(`/content/blog/data/${slug}.json`);
-      if (!response.ok) return null; // Fallback to HTML-only if JSON missing
-      return response.json();
-    },
-    enabled: !!slug,
-  });
-
-  const { data: htmlContent, isLoading: isHtmlLoading, error } = useQuery({
-    queryKey: ["blog-content", slug],
-    queryFn: async () => {
-      if (!slug) throw new Error("Slug is missing");
-      const response = await fetch(`/content/blog/${slug}.html`);
-      if (!response.ok) throw new Error("Article not found");
-      const text = await response.text();
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("slug", slug)
+        .single();
       
-      const bodyMatch = text.match(/<body>([\s\S]*)<\/body>/i);
-      return bodyMatch ? bodyMatch[1] : text;
+      if (error) throw error;
+      return data;
     },
     enabled: !!slug,
   });
-
-  const isLoading = isDataLoading || isHtmlLoading;
 
   if (isLoading) {
     return (
@@ -58,7 +50,7 @@ const BlogPost = () => {
     );
   }
 
-  if (error || !htmlContent) {
+  if (error || !post) {
     return (
       <div className="min-h-screen flex flex-col bg-white text-center">
         <Navbar />
@@ -73,19 +65,17 @@ const BlogPost = () => {
     );
   }
 
-  const readingTime = calculateReadingTime(htmlContent.replace(/<[^>]*>?/gm, ''));
+  const readingTime = calculateReadingTime(post.content);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {postData && (
-        <BlogSEO 
-          title={postData.title}
-          description={postData.excerpt}
-          slug={postData.slug}
-          ogImage={postData.cover_image}
-          publishedDate={postData.published_at}
-        />
-      )}
+      <BlogSEO 
+        title={post.title}
+        description={post.excerpt || ""}
+        slug={post.slug}
+        ogImage={post.cover_image || undefined}
+        publishedDate={post.published_at}
+      />
       
       <Navbar />
       
@@ -104,7 +94,7 @@ const BlogPost = () => {
             <div className="space-y-6">
               <div className="flex flex-wrap items-center gap-3">
                 <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-0">
-                  {postData?.category || "General"}
+                  {post.category || "General"}
                 </Badge>
                 <span className="text-slate-400 text-sm flex items-center gap-1">
                   <Clock className="w-3 h-3" />
@@ -113,7 +103,7 @@ const BlogPost = () => {
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
-                {postData?.title || "Article"}
+                {post.title}
               </h1>
 
               <div className="flex items-center gap-6 pt-4 text-slate-500 text-sm">
@@ -125,7 +115,7 @@ const BlogPost = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  {new Date(postData?.published_at || Date.now()).toLocaleDateString('en-US', {
+                  {new Date(post.published_at).toLocaleDateString('en-US', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric'
@@ -137,11 +127,11 @@ const BlogPost = () => {
         </div>
 
         {/* Featured Image */}
-        {postData?.cover_image && (
+        {post.cover_image && (
           <div className="container mx-auto px-6 -mt-8 md:-mt-12 max-w-4xl">
             <img 
-              src={postData.cover_image} 
-              alt={postData.title} 
+              src={post.cover_image} 
+              alt={post.title} 
               className="w-full aspect-[21/9] object-cover rounded-2xl shadow-2xl border-4 border-white"
             />
           </div>
@@ -149,8 +139,7 @@ const BlogPost = () => {
 
         {/* Content */}
         <article className="container mx-auto px-6 py-16 max-w-3xl">
-          <div 
-            className="prose prose-slate prose-lg md:prose-xl max-w-none 
+          <div className="prose prose-slate prose-lg md:prose-xl max-w-none 
               text-slate-800 leading-relaxed
               prose-headings:text-slate-900 prose-headings:font-extrabold
               prose-p:text-slate-700 prose-p:mb-6
@@ -158,9 +147,11 @@ const BlogPost = () => {
               prose-a:text-blue-600 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
               prose-img:rounded-2xl prose-img:shadow-lg
               prose-blockquote:border-l-blue-500 prose-blockquote:bg-slate-50 prose-blockquote:py-2 prose-blockquote:pr-4 prose-blockquote:rounded-r-lg
-              prose-code:text-pink-600 prose-code:bg-slate-100 prose-code:px-1 prose-code:rounded"
-            dangerouslySetInnerHTML={{ __html: htmlContent }} 
-          />
+              prose-code:text-pink-600 prose-code:bg-slate-100 prose-code:px-1 prose-code:rounded">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.content}
+            </ReactMarkdown>
+          </div>
         </article>
 
         {/* Discussion */}

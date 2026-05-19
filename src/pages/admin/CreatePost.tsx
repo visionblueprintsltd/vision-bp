@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Save } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -32,26 +33,24 @@ const CreatePost = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/save-post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase
+        .from("posts")
+        .insert({
           title,
           slug,
-          content,
+          content: content || "",
           excerpt,
           category,
           cover_image: coverImage,
-          published_at: new Date().toISOString()
-        }),
-      });
+          published_at: new Date().toISOString(),
+          author_id: user?.id
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to save post");
-      }
+      if (error) throw error;
 
-      toast({ title: "Success!", description: "Post saved to GitHub." });
+      toast({ title: "Success!", description: "Post saved to database." });
       navigate("/admin/dashboard");
     } catch (error: any) {
       toast({ variant: "destructive", title: "Error", description: error.message });

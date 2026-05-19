@@ -5,31 +5,20 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
-
-/**
- * Interface representing the structure of a blog post in the static index
- */
-interface BlogIndexItem {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  cover_image: string;
-  published_at: string;
-  category?: string;
-}
+import { Calendar, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const BlogList = () => {
-  const { data: posts, isLoading, error } = useQuery<BlogIndexItem[]>({
-    queryKey: ["static-blogs"],
+  const { data: posts, isLoading, error } = useQuery({
+    queryKey: ["blog-posts"],
     queryFn: async () => {
-      // Fetching the registry of posts stored in your GitHub directory (public/content)
-      const response = await fetch("/content/blog/posts-index.json");
-      if (!response.ok) {
-        throw new Error("Failed to fetch blog index from static storage");
-      }
-      return response.json();
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("published_at", { ascending: false });
+      
+      if (error) throw error;
+      return data;
     },
   });
 

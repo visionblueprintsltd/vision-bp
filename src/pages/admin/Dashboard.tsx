@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, ExternalLink, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -16,9 +17,13 @@ const Dashboard = () => {
   const { data: posts, isLoading } = useQuery({
     queryKey: ["admin-posts"],
     queryFn: async () => {
-      const res = await fetch("/content/blog/posts-index.json");
-      if (!res.ok) return [];
-      return res.json();
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("published_at", { ascending: false });
+      
+      if (error) throw error;
+      return data;
     }
   });
 
@@ -28,17 +33,20 @@ const Dashboard = () => {
   );
 
   const deleteMutation = useMutation({
-    mutationFn: async (slug: string) => {
-      const res = await fetch("/api/delete-post", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug }),
-      });
-      if (!res.ok) throw new Error("Delete failed");
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
-      toast({ title: "Deleted", description: "Post removed from GitHub." });
+      toast({ title: "Deleted", description: "Post removed from database." });
+    },
+    onError: (error: any) => {
+      toast({ variant: "destructive", title: "Error", description: error.message });
     }
   });
 
@@ -81,36 +89,37 @@ const Dashboard = () => {
               </TableRow>
             ) : (
               filteredPosts?.map((post: any) => (
-                <TableRow key={post.slug}>
-                <TableCell className="font-medium">
-                  <div>
-                    {post.title}
-                    <div className="text-xs text-slate-400 font-normal">{post.slug}</div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {post.category || "General"}
-                  </span>
-                </TableCell>
-                <TableCell>{new Date(post.published_at).toLocaleDateString()}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button variant="ghost" size="icon" onClick={() => window.open(`/blog/${post.slug}`, '_blank')}>
-                    <ExternalLink className="w-4 h-4 text-slate-400" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => navigate(`/admin/edit/${post.slug}`)}>
-                    <Edit className="w-4 h-4 text-blue-600" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => { if(confirm("Delete post?")) deleteMutation.mutate(post.slug) }}
-                  >
-                    <Trash2 className="w-4 h-4 text-red-600" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                <TableRow key={post.id}>
+                  <TableCell className="font-medium">
+                    <div>
+                      {post.title}
+                      <div className="text-xs text-slate-400 font-normal">{post.slug}</div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {post.category || "General"}
+                    </span>
+                  </TableCell>
+                  <TableCell>{new Date(post.published_at).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button variant="ghost" size="icon" onClick={() => window.open(`/blog/${post.slug}`, '_blank')}>
+                      <ExternalLink className="w-4 h-4 text-slate-400" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => navigate(`/admin/edit/${post.slug}`)}>
+                      <Edit className="w-4 h-4 text-blue-600" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => { if(confirm("Delete post?")) deleteMutation.mutate(post.id) }}
+                    >
+                      <Trash2 className="w-4 h-4 text-red-600" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+}
           </TableBody>
         </Table>
       </div>
