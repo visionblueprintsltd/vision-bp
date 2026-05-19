@@ -131,7 +131,7 @@ const CreatePost = () => {
 
         <Button type="submit" className="w-full lg:w-auto" disabled={isSubmitting}>
           <Save className="w-4 h-4 mr-2" /> 
-          {isSubmitting ? "Saving to GitHub..." : "Publish to GitHub"}
+          {isSubmitting ? "Saving to Database..." : "Publish to Database"}
         </Button>
       </form>
     </div>
