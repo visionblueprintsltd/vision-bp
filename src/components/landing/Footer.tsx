@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Mail,
   Phone,
@@ -85,28 +86,36 @@ const Footer = () => {
             <h4 className="font-bold mb-6">Quick Links</h4>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li>
-                <a
-                  href="#about"
+                <Link
+                  to="/#about"
                   className="hover:text-primary transition-colors"
                 >
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#showcase"
+                <Link
+                  to="/#showcase"
                   className="hover:text-primary transition-colors"
                 >
                   Vision Club
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#join"
+                <Link
+                  to="/#join"
                   className="hover:text-primary transition-colors"
                 >
                   Join the Club
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/blog"
+                  className="hover:text-primary transition-colors"
+                >
+                  Blog
+                </Link>
               </li>
             </ul>
           </div>

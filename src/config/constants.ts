@@ -27,12 +27,12 @@ export const SOCIAL_LINKS = {
 
 /** Navigation links */
 export const NAV_LINKS = [
-  { label: "About", href: "#about" },
+  { label: "About", href: "/#about" },
   { label: "Blog", href: "/blog" },
-  { label: "Our Offerings", href: "#value" },
-  { label: "Products", href: "#showcase" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Contact", href: "#contact" },
+  { label: "Our Offerings", href: "/#value" },
+  { label: "Products", href: "/#showcase" },
+  { label: "Testimonials", href: "/#testimonials" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 /** Club info — Vision Blueprints Club (personal development) */
