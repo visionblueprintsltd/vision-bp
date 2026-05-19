@@ -11,6 +11,7 @@ import AdminLogin from "./pages/admin/Login";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import AdminDashboard from "./pages/admin/Dashboard";
 import CreatePost from "./pages/admin/CreatePost";
+import EditPost from "./pages/admin/EditPost";
 
 const queryClient = new QueryClient();
 
@@ -39,10 +40,18 @@ const App = () => (
             } 
           />
           <Route 
-            path="/admin/create" 
+            path="/admin/create-post" 
             element={
               <ProtectedRoute>
                 <CreatePost />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/edit/:slug" 
+            element={
+              <ProtectedRoute>
+                <EditPost />
               </ProtectedRoute>
             } 
           />

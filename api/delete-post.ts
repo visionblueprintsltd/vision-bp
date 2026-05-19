@@ -56,6 +56,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw new Error(`Failed to delete file: ${errorData.message}`);
     }
 
+    // 2.5 Delete the JSON data file
+    const dataRes = await fetch(`${BASE_URL}/public/content/blog/data/${slug}.json`, {
+      headers: { 
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (dataRes.ok) {
+      const dataFileData = await dataRes.json();
+      await fetch(`${BASE_URL}/public/content/blog/data/${slug}.json`, {
+        method: 'DELETE',
+        headers: { 
+          'Authorization': `Bearer ${GITHUB_TOKEN}`, 
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify({ 
+          message: `chore(blog): delete data ${slug}`, 
+          sha: dataFileData.sha 
+        })
+      });
+    }
+
     // 3. Update the registry (posts-index.json) reflect the deletion
     const indexPath = "public/content/blog/posts-index.json";
     const indexRes = await fetch(`${BASE_URL}/${indexPath}`, {
