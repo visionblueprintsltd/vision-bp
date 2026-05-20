@@ -85,8 +85,20 @@ const BlogPost = () => {
   const readingTime = calculateReadingTime(post.content);
   const wordCount = calculateWordCount(post.content);
 
+  // Helper to decode markdown content if it's escaped
+  const decodeMarkdown = (content: string) => {
+    if (!content) return "";
+    // Fix escaped newlines and other common issues
+    return content
+      .replace(/\\n/g, '\n')
+      .replace(/\\r/g, '\r')
+      .replace(/\\t/g, '\t');
+  };
+
+  const processedContent = decodeMarkdown(post.content);
+
   // Extract headings for TOC
-  const headings = post.content.split('\n')
+  const headings = processedContent.split('\n')
     .filter(line => line.startsWith('## ') || line.startsWith('### '))
     .map(line => {
       const text = line.replace(/^#+ /, '');
@@ -192,11 +204,16 @@ const BlogPost = () => {
 
           <div className="prose prose-invert prose-slate prose-lg md:prose-xl max-w-none 
               prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
-              prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:font-light
+              prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:border-border prose-h2:pb-4
+              prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
+              prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:font-light prose-p:mb-6
+              prose-li:text-muted-foreground prose-li:font-light prose-li:my-2
+              prose-ul:list-disc prose-ul:pl-6
+              prose-ol:list-decimal prose-ol:pl-6
               prose-strong:text-foreground prose-strong:font-bold
               prose-a:text-primary prose-a:font-bold prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-2xl prose-img:border prose-img:border-border
-              prose-blockquote:border-l-primary prose-blockquote:bg-card prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:rounded-r-2xl prose-blockquote:not-italic
+              prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:my-12
+              prose-blockquote:border-l-primary prose-blockquote:bg-card prose-blockquote:py-6 prose-blockquote:px-10 prose-blockquote:rounded-r-3xl prose-blockquote:not-italic prose-blockquote:my-10
               prose-code:text-primary prose-code:bg-card prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
@@ -211,7 +228,7 @@ const BlogPost = () => {
                 }
               }}
             >
-              {post.content}
+              {processedContent}
             </ReactMarkdown>
           </div>
           
