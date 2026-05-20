@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BlogList from "./pages/blog/BlogList";
@@ -16,52 +17,54 @@ import EditPost from "./pages/admin/EditPost";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Main Landing Page */}
-          <Route path="/" element={<Index />} />
-          
-          {/* Blog Section */}
-          <Route path="/blog" element={<BlogList />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          
-          {/* Admin Section */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route 
-            path="/admin/dashboard" 
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/create-post" 
-            element={
-              <ProtectedRoute>
-                <CreatePost />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin/edit/:slug" 
-            element={
-              <ProtectedRoute>
-                <EditPost />
-              </ProtectedRoute>
-            } 
-          />
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Main Landing Page */}
+            <Route path="/" element={<Index />} />
+            
+            {/* Blog Section */}
+            <Route path="/blog" element={<BlogList />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            
+            {/* Admin Section */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route 
+              path="/admin/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/create-post" 
+              element={
+                <ProtectedRoute>
+                  <CreatePost />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/edit/:slug" 
+              element={
+                <ProtectedRoute>
+                  <EditPost />
+                </ProtectedRoute>
+              } 
+            />
 
-          {/* Catch-all */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;

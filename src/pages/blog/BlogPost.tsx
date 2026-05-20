@@ -55,8 +55,14 @@ const BlogPost = () => {
       <div className="min-h-screen flex flex-col bg-white text-center">
         <Navbar />
         <div className="flex-grow flex flex-col items-center justify-center p-6">
-          <h2 className="text-3xl font-bold mb-4 text-slate-900">Article Not Found</h2>
-          <Button asChild variant="outline">
+          <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-6">
+            <ArrowLeft className="w-10 h-10" />
+          </div>
+          <h2 className="text-3xl font-bold mb-2 text-slate-900">Article Not Found</h2>
+          <p className="text-slate-500 mb-8 max-w-md mx-auto">
+            {error ? (error as any).message : "The article you're looking for doesn't exist or has been moved."}
+          </p>
+          <Button asChild variant="default" className="bg-slate-900">
             <Link to="/blog">Return to Blog</Link>
           </Button>
         </div>
@@ -157,11 +163,12 @@ const BlogPost = () => {
         {/* Discussion */}
         <section className="bg-slate-50 border-t border-slate-100 py-16 md:py-24 mt-12">
           <div className="container mx-auto px-6 max-w-3xl">
-            <div className="flex items-center gap-2 mb-12 text-slate-900">
-              <MessageCircle className="w-6 h-6 text-blue-600" />
-              <h3 className="text-3xl font-bold">Discussion</h3>
-            </div>
-            {slug && <FacebookComments slug={slug} />}
+            {slug && (
+              <div key={slug}>
+                {/* Facebook Comments SDK sometimes crashes if not handled carefully */}
+                <FacebookComments slug={slug} />
+              </div>
+            )}
           </div>
         </section>
       </main>
