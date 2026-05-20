@@ -11,6 +11,7 @@ import { BlogSEO } from "@/components/blog/BlogSEO";
 import { calculateReadingTime } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { QuickReactions } from "@/components/blog/QuickReactions";
+import { TableOfContents } from "@/components/blog/TableOfContents";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -72,6 +73,16 @@ const BlogPost = () => {
   }
 
   const readingTime = calculateReadingTime(post.content);
+
+  // Extract headings for TOC
+  const headings = post.content.split('\n')
+    .filter(line => line.startsWith('## ') || line.startsWith('### '))
+    .map(line => {
+      const text = line.replace(/^#+ /, '');
+      const id = text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+      const level = (line.match(/^#+/) || [''])[0].length;
+      return { id, text, level };
+    });
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -154,6 +165,8 @@ const BlogPost = () => {
 
         {/* Content */}
         <article className="container mx-auto px-6 max-w-3xl mb-20">
+          <TableOfContents items={headings} />
+
           <div className="prose prose-invert prose-slate prose-lg md:prose-xl max-w-none 
               prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
               prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:font-light
@@ -162,13 +175,25 @@ const BlogPost = () => {
               prose-img:rounded-2xl prose-img:border prose-img:border-border
               prose-blockquote:border-l-primary prose-blockquote:bg-card prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:rounded-r-2xl prose-blockquote:not-italic
               prose-code:text-primary prose-code:bg-card prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h2: ({node, ...props}) => {
+                  const id = props.children?.toString().toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+                  return <h2 id={id} {...props} />;
+                },
+                h3: ({node, ...props}) => {
+                  const id = props.children?.toString().toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+                  return <h3 id={id} {...props} />;
+                }
+              }}
+            >
               {post.content}
             </ReactMarkdown>
           </div>
           
           <div className="mt-20">
-            <QuickReactions />
+            <QuickReactions postId={post.id} />
           </div>
         </article>
 
