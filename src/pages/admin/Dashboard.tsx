@@ -19,6 +19,15 @@ const Dashboard = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, []);
 
   const { data: posts, isLoading } = useQuery({
     queryKey: ["admin-posts"],
@@ -111,8 +120,8 @@ const Dashboard = () => {
               <User className="w-5 h-5" />
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-bold truncate">Administrator</p>
-              <p className="text-[10px] text-muted-foreground truncate">manage@vision.com</p>
+              <p className="text-sm font-bold truncate">{user?.user_metadata?.full_name || 'Loading...'}</p>
+              <p className="text-[10px] text-muted-foreground truncate">{user?.email || ''}</p>
             </div>
           </div>
           <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:bg-destructive/10 transition-all" onClick={handleLogout}>
