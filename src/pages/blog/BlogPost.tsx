@@ -6,7 +6,7 @@ import Footer from "@/components/landing/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MessageCircle, Calendar, Clock, User, FileText, Eye } from "lucide-react";
+import { ArrowLeft, MessageCircle, Calendar, Clock, User, FileText } from "lucide-react";
 import { FacebookComments } from "@/components/blog/FacebookComments";
 import { BlogSEO } from "@/components/blog/BlogSEO";
 import { calculateReadingTime, calculateWordCount } from "@/lib/utils";
@@ -34,15 +34,6 @@ const BlogPost = () => {
     },
     enabled: !!slug,
   });
-
-  useEffect(() => {
-    if (post?.id) {
-      supabase.rpc('increment_post_views', { target_post_id: post.id })
-        .then(({ error }) => {
-          if (error) console.error("View increment error:", error);
-        });
-    }
-  }, [post?.id]);
 
   if (isLoading) {
     return (
@@ -147,11 +138,6 @@ const BlogPost = () => {
                 <span className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-primary" />
                   {wordCount} Words
-                </span>
-                <span className="w-1 h-1 rounded-full bg-border" />
-                <span className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-primary" />
-                  {post.views || 0} Views
                 </span>
               </div>
             </div>

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { Calendar, ArrowRight, Eye } from "lucide-react";
+import { Calendar, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { calculateReadingTime } from "@/lib/utils";
 
@@ -87,11 +87,6 @@ const BlogList = () => {
                       </span>
                       <span className="w-1 h-1 rounded-full bg-border" />
                       <span className="uppercase tracking-wider">{calculateReadingTime(post.content)}</span>
-                      <span className="w-1 h-1 rounded-full bg-border" />
-                      <span className="flex items-center gap-1.5 uppercase tracking-wider">
-                        <Eye className="w-3.5 h-3.5 text-primary" />
-                        {post.views || 0}
-                      </span>
                     </div>
                     
                     <h3 className="text-2xl font-display font-bold text-foreground mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight">

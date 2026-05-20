@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   Plus, Edit, Trash2, ExternalLink, Search, 
   LayoutDashboard, FileText, Settings, LogOut,
-  BarChart3, Eye, Clock, FilePlus, User
+  BarChart3, Clock, FilePlus, User
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -150,7 +150,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {[
               { label: "Total Articles", value: posts?.length || 0, icon: FileText, color: "text-primary", bg: "bg-primary/10" },
-              { label: "Status", value: "All Active", icon: Eye, color: "text-green-500", bg: "bg-green-500/10" },
+              { label: "Status", value: "All Active", icon: BarChart3, color: "text-green-500", bg: "bg-green-500/10" },
               { label: "Recent Update", value: posts?.[0] ? new Date(posts[0].updated_at).toLocaleDateString() : 'N/A', icon: Clock, color: "text-amber-500", bg: "bg-amber-500/10" }
             ].map((stat, i) => (
               <div key={i} className="glass-card p-8 flex items-center gap-6 group hover:border-primary/30 transition-all">
@@ -221,11 +221,8 @@ const Dashboard = () => {
                         </TableCell>
                         <TableCell className="p-6">
                           <div className="flex flex-col gap-1 text-[10px] font-bold uppercase tracking-wider">
-                            <div className="flex items-center gap-1.5 text-primary">
-                              <Eye className="w-3 h-3" /> {post.views || 0}
-                            </div>
-                            <div className="flex items-center gap-1.5 text-muted-foreground">
-                              <FileText className="w-3 h-3" /> {calculateWordCount(post.content)}
+                            <div className="flex items-center gap-1.5 text-muted-foreground text-primary">
+                              <FileText className="w-3 h-3" /> {calculateWordCount(post.content)} Words
                             </div>
                           </div>
                         </TableCell>
