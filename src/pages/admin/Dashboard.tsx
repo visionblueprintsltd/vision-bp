@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { calculateReadingTime, calculateWordCount } from "@/lib/utils";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -174,7 +175,8 @@ const Dashboard = () => {
               <Table>
                 <TableHeader className="bg-muted/30">
                   <TableRow className="hover:bg-transparent border-border">
-                    <TableHead className="w-[45%] font-bold text-muted-foreground uppercase tracking-widest text-[10px] p-6">Content Details</TableHead>
+                    <TableHead className="w-[40%] font-bold text-muted-foreground uppercase tracking-widest text-[10px] p-6">Content Details</TableHead>
+                    <TableHead className="font-bold text-muted-foreground uppercase tracking-widest text-[10px] p-6">Stats</TableHead>
                     <TableHead className="font-bold text-muted-foreground uppercase tracking-widest text-[10px] p-6">Category</TableHead>
                     <TableHead className="font-bold text-muted-foreground uppercase tracking-widest text-[10px] p-6">Publish Date</TableHead>
                     <TableHead className="text-right font-bold text-muted-foreground uppercase tracking-widest text-[10px] p-6">Manage</TableHead>
@@ -206,6 +208,16 @@ const Dashboard = () => {
                           <div className="flex flex-col">
                             <span className="font-bold text-foreground text-lg group-hover:text-primary transition-colors">{post.title}</span>
                             <span className="text-[10px] text-muted-foreground font-mono mt-1 uppercase tracking-widest">URL: /{post.slug}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="p-6">
+                          <div className="flex flex-col gap-1 text-[10px] font-bold uppercase tracking-wider">
+                            <div className="flex items-center gap-1.5 text-primary">
+                              <Eye className="w-3 h-3" /> {post.views || 0}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-muted-foreground">
+                              <FileText className="w-3 h-3" /> {calculateWordCount(post.content)}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="p-6">

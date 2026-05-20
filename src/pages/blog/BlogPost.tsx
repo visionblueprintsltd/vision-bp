@@ -1,14 +1,15 @@
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MessageCircle, Calendar, Clock, User } from "lucide-react";
+import { ArrowLeft, MessageCircle, Calendar, Clock, User, FileText, Eye } from "lucide-react";
 import { FacebookComments } from "@/components/blog/FacebookComments";
 import { BlogSEO } from "@/components/blog/BlogSEO";
-import { calculateReadingTime } from "@/lib/utils";
+import { calculateReadingTime, calculateWordCount } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { QuickReactions } from "@/components/blog/QuickReactions";
 import { TableOfContents } from "@/components/blog/TableOfContents";
@@ -33,6 +34,15 @@ const BlogPost = () => {
     },
     enabled: !!slug,
   });
+
+  useEffect(() => {
+    if (post?.id) {
+      supabase.rpc('increment_post_views', { target_post_id: post.id })
+        .then(({ error }) => {
+          if (error) console.error("View increment error:", error);
+        });
+    }
+  }, [post?.id]);
 
   if (isLoading) {
     return (
@@ -73,6 +83,7 @@ const BlogPost = () => {
   }
 
   const readingTime = calculateReadingTime(post.content);
+  const wordCount = calculateWordCount(post.content);
 
   // Extract headings for TOC
   const headings = post.content.split('\n')
@@ -114,10 +125,22 @@ const BlogPost = () => {
               <Badge className="bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 transition-colors font-bold">
                 {post.category || "General"}
               </Badge>
-              <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                <Clock className="w-4 h-4 text-primary" />
-                {readingTime}
-              </span>
+              <div className="flex items-center gap-4 text-muted-foreground text-xs font-bold uppercase tracking-widest">
+                <span className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-primary" />
+                  {readingTime}
+                </span>
+                <span className="w-1 h-1 rounded-full bg-border" />
+                <span className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-primary" />
+                  {wordCount} Words
+                </span>
+                <span className="w-1 h-1 rounded-full bg-border" />
+                <span className="flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-primary" />
+                  {post.views || 0} Views
+                </span>
+              </div>
             </div>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-tight">
