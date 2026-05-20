@@ -7,6 +7,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Calendar, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { calculateReadingTime } from "@/lib/utils";
 
 const BlogList = () => {
   const { data: posts, isLoading, error } = useQuery({
@@ -55,44 +56,49 @@ const BlogList = () => {
             </button>
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts?.map((post) => (
-              <Link key={post.id} to={`/blog/${post.slug}`} className="group">
-                <Card className="h-full border-0 shadow-sm hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden bg-white">
-                  <div className="relative overflow-hidden aspect-[16/10]">
+              <Link key={post.id} to={`/blog/${post.slug}`} className="group h-full">
+                <article className="flex flex-col h-full bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                  <div className="relative aspect-[16/10] overflow-hidden">
                     <img 
                       src={post.cover_image || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80"} 
                       alt={post.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-white/90 text-slate-900 hover:bg-white border-0 backdrop-blur-md">
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <Badge className="bg-white/95 text-slate-900 hover:bg-white border-0 backdrop-blur-md shadow-sm font-semibold">
                         {post.category || "General"}
                       </Badge>
                     </div>
                   </div>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center gap-4 text-xs text-slate-400 mb-2">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(post.published_at).toLocaleDateString()}
+                  
+                  <div className="flex flex-col flex-grow p-8">
+                    <div className="flex items-center gap-3 text-xs font-medium text-slate-400 mb-4">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
+                      <span className="w-1 h-1 rounded-full bg-slate-300" />
+                      <span>{calculateReadingTime(post.content)}</span>
                     </div>
-                    <CardTitle className="text-xl line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    
+                    <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
                       {post.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 line-clamp-3 text-sm leading-relaxed">
+                    </h3>
+                    
+                    <p className="text-slate-600 text-sm leading-relaxed line-clamp-3 mb-8">
                       {post.excerpt}
                     </p>
-                  </CardContent>
-                  <CardFooter className="pt-0 flex justify-between items-center mt-auto">
-                    <span className="text-blue-600 text-sm font-semibold inline-flex items-center group-hover:translate-x-1 transition-transform">
-                      Read More <ArrowRight className="ml-1 w-4 h-4" />
-                    </span>
-                  </CardFooter>
-                </Card>
+                    
+                    <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+                      <span className="text-blue-600 text-sm font-bold inline-flex items-center">
+                        Read Article <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </div>
+                  </div>
+                </article>
               </Link>
             ))}
           </div>
