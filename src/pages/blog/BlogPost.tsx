@@ -95,7 +95,8 @@ const BlogPost = () => {
       .replace(/\\t/g, '\t');
   };
 
-  const processedContent = decodeMarkdown(post.content);
+  const processedContent = decodeMarkdown(post.content)
+    .replace(/\n(?!\n)/g, '\n\n'); // Ensure single newlines are treated as paragraph breaks
 
   // Extract headings for TOC
   const headings = processedContent.split('\n')
@@ -202,30 +203,29 @@ const BlogPost = () => {
         <article className="container mx-auto px-6 max-w-3xl mb-20">
           <TableOfContents items={headings} />
 
-          <div className="prose prose-invert prose-slate prose-lg md:prose-xl max-w-none 
+          <div className="prose prose-invert prose-gold prose-lg md:prose-xl max-w-none 
               prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
-              prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:border-border prose-h2:pb-4
-              prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
-              prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:font-light prose-p:mb-6
-              prose-li:text-muted-foreground prose-li:font-light prose-li:my-2
-              prose-ul:list-disc prose-ul:pl-6
-              prose-ol:list-decimal prose-ol:pl-6
+              prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:font-light
               prose-strong:text-foreground prose-strong:font-bold
               prose-a:text-primary prose-a:font-bold prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-2xl prose-img:border prose-img:border-border prose-img:my-12
-              prose-blockquote:border-l-primary prose-blockquote:bg-card prose-blockquote:py-6 prose-blockquote:px-10 prose-blockquote:rounded-r-3xl prose-blockquote:not-italic prose-blockquote:my-10
+              prose-img:rounded-2xl prose-img:border prose-img:border-border
+              prose-blockquote:border-l-primary prose-blockquote:bg-card prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:rounded-r-2xl prose-blockquote:not-italic
               prose-code:text-primary prose-code:bg-card prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               components={{
                 h2: ({node, ...props}) => {
                   const id = props.children?.toString().toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-                  return <h2 id={id} {...props} />;
+                  return <h2 id={id} className="text-3xl font-display font-bold mt-12 mb-6 border-b border-border pb-4" {...props} />;
                 },
                 h3: ({node, ...props}) => {
                   const id = props.children?.toString().toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-                  return <h3 id={id} {...props} />;
-                }
+                  return <h3 id={id} className="text-2xl font-display font-bold mt-8 mb-4" {...props} />;
+                },
+                ul: ({node, ...props}) => <ul className="list-disc pl-6 space-y-4 mb-8 text-muted-foreground font-light" {...props} />,
+                ol: ({node, ...props}) => <ol className="list-decimal pl-6 space-y-4 mb-8 text-muted-foreground font-light" {...props} />,
+                li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
+                p: ({node, ...props}) => <p className="mb-8 leading-relaxed text-muted-foreground font-light" {...props} />
               }}
             >
               {processedContent}
