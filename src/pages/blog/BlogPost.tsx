@@ -10,6 +10,7 @@ import { FacebookComments } from "@/components/blog/FacebookComments";
 import { BlogSEO } from "@/components/blog/BlogSEO";
 import { calculateReadingTime } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { QuickReactions } from "@/components/blog/QuickReactions";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -34,15 +35,14 @@ const BlogPost = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
         <Navbar />
-        <div className="container mx-auto px-4 py-24 max-w-3xl flex-grow">
-          <Skeleton className="h-12 w-3/4 mb-6" />
-          <Skeleton className="h-[400px] w-full rounded-2xl mb-8" />
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-2/3" />
+        <div className="container mx-auto px-4 py-32 max-w-3xl flex-grow">
+          <div className="space-y-4 animate-pulse">
+            <div className="h-12 w-3/4 bg-card rounded-lg" />
+            <div className="h-[400px] w-full bg-card rounded-2xl" />
+            <div className="h-4 w-full bg-card rounded" />
+            <div className="h-4 w-full bg-card rounded" />
           </div>
         </div>
         <Footer />
@@ -52,18 +52,18 @@ const BlogPost = () => {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen flex flex-col bg-white text-center">
+      <div className="min-h-screen flex flex-col bg-background text-foreground text-center">
         <Navbar />
         <div className="flex-grow flex flex-col items-center justify-center p-6">
-          <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-6">
+          <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-6">
             <ArrowLeft className="w-10 h-10" />
           </div>
-          <h2 className="text-3xl font-bold mb-2 text-slate-900">Article Not Found</h2>
-          <p className="text-slate-500 mb-8 max-w-md mx-auto">
+          <h2 className="text-3xl font-display font-bold mb-2">Article Not Found</h2>
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
             {error ? (error as any).message : "The article you're looking for doesn't exist or has been moved."}
           </p>
-          <Button asChild variant="default" className="bg-slate-900">
-            <Link to="/blog">Return to Blog</Link>
+          <Button asChild variant="default" className="bg-gradient-gold text-primary-foreground glow-gold transition-all">
+            <Link to="/blog">Return to Insights</Link>
           </Button>
         </div>
         <Footer />
@@ -74,7 +74,7 @@ const BlogPost = () => {
   const readingTime = calculateReadingTime(post.content);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       <BlogSEO 
         title={post.title}
         description={post.excerpt || ""}
@@ -85,48 +85,54 @@ const BlogPost = () => {
       
       <Navbar />
       
-      <main className="flex-grow">
+      <main className="flex-grow pt-32 relative">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -z-10" />
+        
         {/* Header Section */}
-        <div className="bg-slate-50 border-b border-slate-100">
-          <div className="container mx-auto px-6 py-12 md:py-20 max-w-4xl">
-            <Link 
-              to="/blog" 
-              className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 mb-8 transition-colors group"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> 
-              Back to Insights
-            </Link>
+        <div className="container mx-auto px-6 max-w-4xl mb-12">
+          <Link 
+            to="/blog" 
+            className="inline-flex items-center text-sm font-bold text-primary hover:opacity-80 mb-12 transition-all group"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> 
+            Back to Insights
+          </Link>
 
-            <div className="space-y-6">
-              <div className="flex flex-wrap items-center gap-3">
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-0">
-                  {post.category || "General"}
-                </Badge>
-                <span className="text-slate-400 text-sm flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {readingTime}
-                </span>
-              </div>
+          <div className="space-y-8">
+            <div className="flex flex-wrap items-center gap-4">
+              <Badge className="bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 transition-colors font-bold">
+                {post.category || "General"}
+              </Badge>
+              <span className="text-muted-foreground text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                <Clock className="w-4 h-4 text-primary" />
+                {readingTime}
+              </span>
+            </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
-                {post.title}
-              </h1>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-tight">
+              {post.title}
+            </h1>
 
-              <div className="flex items-center gap-6 pt-4 text-slate-500 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
-                    <User className="w-4 h-4" />
-                  </div>
-                  <span className="font-medium text-slate-900">Vision Team</span>
+            <div className="flex items-center gap-6 pt-6 border-t border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-primary shadow-sm">
+                  <User className="w-5 h-5" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
+                <div>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Author</p>
+                  <p className="font-bold text-foreground">Vision Team</p>
+                </div>
+              </div>
+              <div className="w-px h-8 bg-border" />
+              <div>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Published</p>
+                <p className="font-bold text-foreground">
                   {new Date(post.published_at).toLocaleDateString('en-US', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric'
                   })}
-                </div>
+                </p>
               </div>
             </div>
           </div>
@@ -134,35 +140,41 @@ const BlogPost = () => {
 
         {/* Featured Image */}
         {post.cover_image && (
-          <div className="container mx-auto px-6 -mt-8 md:-mt-12 max-w-4xl">
-            <img 
-              src={post.cover_image} 
-              alt={post.title} 
-              className="w-full aspect-[21/9] object-cover rounded-2xl shadow-2xl border-4 border-white"
-            />
+          <div className="container mx-auto px-6 max-w-5xl mb-20">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-border aspect-[21/9]">
+              <img 
+                src={post.cover_image} 
+                alt={post.title} 
+                className="w-full h-full object-cover opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-40" />
+            </div>
           </div>
         )}
 
         {/* Content */}
-        <article className="container mx-auto px-6 py-16 max-w-3xl">
-          <div className="prose prose-slate prose-lg md:prose-xl max-w-none 
-              text-slate-800 leading-relaxed
-              prose-headings:text-slate-900 prose-headings:font-extrabold
-              prose-p:text-slate-700 prose-p:mb-6
-              prose-strong:text-slate-900 prose-strong:font-bold
-              prose-a:text-blue-600 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-2xl prose-img:shadow-lg
-              prose-blockquote:border-l-blue-500 prose-blockquote:bg-slate-50 prose-blockquote:py-2 prose-blockquote:pr-4 prose-blockquote:rounded-r-lg
-              prose-code:text-pink-600 prose-code:bg-slate-100 prose-code:px-1 prose-code:rounded">
+        <article className="container mx-auto px-6 max-w-3xl mb-20">
+          <div className="prose prose-invert prose-slate prose-lg md:prose-xl max-w-none 
+              prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
+              prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:font-light
+              prose-strong:text-foreground prose-strong:font-bold
+              prose-a:text-primary prose-a:font-bold prose-a:no-underline hover:prose-a:underline
+              prose-img:rounded-2xl prose-img:border prose-img:border-border
+              prose-blockquote:border-l-primary prose-blockquote:bg-card prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:rounded-r-2xl prose-blockquote:not-italic
+              prose-code:text-primary prose-code:bg-card prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {post.content}
             </ReactMarkdown>
           </div>
+          
+          <div className="mt-20">
+            <QuickReactions />
+          </div>
         </article>
 
         {/* Discussion */}
-        <section className="bg-slate-50 border-t border-slate-100 py-16 md:py-24 mt-12">
-          <div className="container mx-auto px-6 max-w-3xl">
+        <section className="bg-card/30 border-t border-border py-24">
+          <div className="container mx-auto px-6 max-w-4xl">
             {slug && (
               <div key={slug}>
                 {/* Facebook Comments SDK sometimes crashes if not handled carefully */}

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Loader2, Layout, Link as LinkIcon, Image as ImageIcon, FileText } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Layout, Link as LinkIcon, Image as ImageIcon, FileText, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const EditPost = () => {
@@ -70,7 +70,7 @@ const EditPost = () => {
 
       if (error) throw error;
 
-      toast({ title: "Success!", description: "Post updated successfully." });
+      toast({ title: "Success!", description: "Insight updated successfully." });
       navigate("/admin/dashboard");
     } catch (error: any) {
       toast({ variant: "destructive", title: "Error", description: error.message });
@@ -81,114 +81,119 @@ const EditPost = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-50/50">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/50 pb-20">
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/admin/dashboard")} className="text-slate-500">
+    <div className="min-h-screen bg-background text-foreground pb-20">
+      <div className="bg-card border-b border-border sticky top-0 z-50 backdrop-blur-xl bg-card/80">
+        <div className="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/admin/dashboard")} className="text-muted-foreground hover:text-primary transition-all">
               <ArrowLeft className="w-4 h-4 mr-2" /> Back
             </Button>
-            <div className="h-4 w-px bg-slate-200" />
-            <h1 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Edit Article</h1>
+            <div className="h-6 w-px bg-border" />
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <h1 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground">Edit Insight</h1>
+            </div>
           </div>
           <Button 
             type="submit" 
             form="edit-form" 
             disabled={isSubmitting}
-            className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100"
+            className="bg-gradient-gold text-primary-foreground font-bold shadow-gold hover:opacity-90 transition-all px-8 rounded-xl"
           >
-            {isSubmitting ? "Saving..." : "Save Changes"}
+            {isSubmitting ? "Saving Changes..." : "Save Changes"}
           </Button>
         </div>
       </div>
 
-      <main className="max-w-5xl mx-auto px-6 pt-12">
-        <form id="edit-form" onSubmit={handleSubmit} className="space-y-8">
+      <main className="max-w-5xl mx-auto px-6 pt-12 relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[120px] -z-10" />
+        
+        <form id="edit-form" onSubmit={handleSubmit} className="space-y-10">
           {/* Main Content Card */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 space-y-8">
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Article Title</label>
+          <div className="glass-card p-10 space-y-10">
+            <div className="space-y-4">
+              <label className="text-[10px] font-bold text-primary uppercase tracking-[0.3em] ml-1">Headline</label>
               <Input 
                 value={title} 
                 onChange={(e) => setTitle(e.target.value)} 
-                placeholder="Enter article title..." 
-                className="text-2xl md:text-3xl font-bold h-auto py-4 px-0 border-0 focus-visible:ring-0 placeholder:text-slate-200" 
+                placeholder="Article headline..." 
+                className="text-3xl md:text-5xl font-display font-bold h-auto py-6 px-0 border-0 bg-transparent focus-visible:ring-0 placeholder:text-muted/20" 
                 required 
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                  <LinkIcon className="w-3 h-3" /> URL Slug
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+                  <LinkIcon className="w-3 h-3 text-primary" /> Permanent Link (Slug)
                 </label>
                 <Input 
                   value={slug} 
                   onChange={(e) => setSlug(e.target.value)} 
-                  placeholder="post-url-slug" 
-                  className="bg-slate-50 border-slate-100 focus:bg-white transition-all font-mono text-sm"
+                  placeholder="article-url-slug" 
+                  className="bg-background border-border focus:border-primary transition-all font-mono text-sm py-6 rounded-xl"
                   required 
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                  <Layout className="w-3 h-3" /> Category
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+                  <Layout className="w-3 h-3 text-primary" /> Category
                 </label>
                 <Input 
                   value={category} 
                   onChange={(e) => setCategory(e.target.value)} 
-                  placeholder="e.g. Insights, News" 
-                  className="bg-slate-50 border-slate-100 focus:bg-white transition-all"
+                  placeholder="e.g. Life Blueprints" 
+                  className="bg-background border-border focus:border-primary transition-all py-6 rounded-xl"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                <ImageIcon className="w-3 h-3" /> Cover Image URL
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+                <ImageIcon className="w-3 h-3 text-primary" /> Visual Cover URL
               </label>
               <Input 
                 value={coverImage} 
                 onChange={(e) => setCoverImage(e.target.value)} 
                 placeholder="https://images.unsplash.com/photo-..." 
-                className="bg-slate-50 border-slate-100 focus:bg-white transition-all"
+                className="bg-background border-border focus:border-primary transition-all py-6 rounded-xl"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                <FileText className="w-3 h-3" /> Excerpt / Summary
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+                <FileText className="w-3 h-3 text-primary" /> Brief Excerpt
               </label>
               <Textarea 
                 value={excerpt} 
                 onChange={(e) => setExcerpt(e.target.value)} 
-                placeholder="A brief overview..." 
-                className="bg-slate-50 border-slate-100 focus:bg-white transition-all resize-none min-h-[100px]"
+                placeholder="Summary for cards and social..." 
+                className="bg-background border-border focus:border-primary transition-all resize-none min-h-[120px] rounded-xl p-4 font-light leading-relaxed"
                 rows={3}
               />
             </div>
           </div>
 
           {/* Editor Card */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden" data-color-mode="light">
-            <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                Content Body (Markdown)
+          <div className="glass-card overflow-hidden" data-color-mode="dark">
+            <div className="p-6 border-b border-border bg-muted/10">
+              <label className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                Article Narrative (Markdown Support)
               </label>
             </div>
             <MDEditor
               value={content}
               onChange={setContent}
-              height={500}
+              height={600}
               preview="live"
-              className="border-0"
+              className="border-0 bg-background"
             />
           </div>
         </form>
