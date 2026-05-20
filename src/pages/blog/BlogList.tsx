@@ -43,12 +43,15 @@ const BlogList = () => {
           </div>
         ) : error ? (
           <div className="text-center py-24">
-            <p className="text-red-500 mb-4">Error loading articles. Please try again later.</p>
+            <p className="text-red-500 mb-4 font-semibold text-lg">Failed to load articles</p>
+            <p className="text-slate-500 mb-8 max-w-md mx-auto">
+              {(error as any)?.message || "There was an unexpected error fetching the blog posts. Please try again later."}
+            </p>
             <button 
               onClick={() => window.location.reload()}
-              className="text-blue-600 hover:underline font-medium"
+              className="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
             >
-              Reload Page
+              Retry
             </button>
           </div>
         ) : (

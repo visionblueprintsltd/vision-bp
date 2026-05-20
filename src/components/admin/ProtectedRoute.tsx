@@ -11,8 +11,8 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
-      // Strict check: Is there a session AND is it the admin email?
-      if (session && session.user.email === 'gtechong72@gmail.com') {
+      // Check if there is a valid session
+      if (session) {
         setIsAuthenticated(true);
       } else {
         navigate("/admin/login");
